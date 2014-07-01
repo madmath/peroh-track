@@ -5,7 +5,7 @@
   "authors": [
     "Mathieu Perreault <mathieu.perreault@gmail.com>"
   ],
-  "description": "Application to track ETA for Nest",
+  "description": "Application to track Nest",
   "license": "MIT",
   "private": true,
   "ignore": [

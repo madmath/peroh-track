@@ -21,7 +21,6 @@ var nestToken  = window.readCookie('nest_token'),
     thermostat = {},
     structure  = {};
 
-window.console.log(nestToken);
 if (nestToken) { // Simple check for token
 
   // Create a reference to the API using the provided token
