@@ -1,0 +1,117 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+
+<script src="/bower_components/firebase/firebase.js"></script>
+<script src="/javascript/cookies.js"></script>
+<script src="/javascript/nest.js"></script>
+
+<polymer-element name="nest-control">
+  <template>
+    <style>
+    :host {
+      display: block;
+      position: relative;
+      background-color: white;
+      width: 300px;
+      font-size: 1.2rem;
+      font-weight: 300;
+      height: 300px;
+      border-radius: 50%;
+      text-align: center;
+    }
+    polyfill-next-selector { content: '.current-temperature h2'; }
+    .current-temperature h2, .current-temperature ::content h2 {
+      font-size: 4rem;
+      font-weight: 300;
+      text-align: center;
+      margin: 10px 0px 10px 0px;
+    }
+    #temp-up {
+      color: #da4336;
+    }
+    #temp-down {
+      color: #4285f4;
+      position: absolute;
+      bottom: 0px;
+      right: 135px;
+    }
+    .temp-arrow {
+      width: 1em;
+      background: white;
+      border-radius: 50%;
+      padding: 6px;
+      border: 1px solid gray;
+      margin: auto;
+    }
+    .mode p {
+      margin-top: 10px;
+    }
+    .cool {
+      color: #4285f4;
+    }
+    .heat {
+      color: #da4336;
+    }
+    </style>
+    <div id="temp-up" class='temp-arrow' on-tap="{{upTapped}}">⬆</div>
+    <br>
+    <div class="current-temperature" >
+      <h2>{{temperature}} {{scale}}</h2>
+    </div>
+    <img hidden?="{{!has_leaf}}" src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMC4wMDIiIGhlaWdodD0iMjAiIHZpZXdCb3g9Ii0yLjUgMzc5LjUgMjAuMDAyIDIwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IC0yLjUgMzc5LjUgMjAuMDAyIDIwIj48cGF0aCBmaWxsPSIjNzFCRjQ0IiBkPSJNLS40NDcgMzkyLjUxN2MuMDY3LS45NzkuMjA1LTEuOTAzLjQxNC0yLjc3Ni4yMDgtLjg3MS40ODctMS42Ni44MzYtMi4zNy4zNDktLjcwNi43NzUtMS4zMTUgMS4yNzktMS44MjkuNTAzLS41MTQgMS4wODUtLjkgMS43NDQtMS4xNjMuMy0uMTE3LjYzNC0uMjI5IDEuMDAzLS4zMzQuMzY4LS4xMDYuNzg1LS4xOTkgMS4yNS0uMjc3LjkwMS0uMTU0IDEuNzczLS4yODUgMi42MTYtLjM5My42MjEtLjA2NiAxLjI0OC0uMTQ4IDEuODgzLS4yNDcuNjM1LS4wOTYgMS4yMzItLjIxOCAxLjc5NS0uMzYzczEuMDY1LS4zMTggMS41MTItLjUyMi43OTMtLjQ1MSAxLjA0Ny0uNzQxYy4xMDYuMjgxLjE4Mi41MTYuMjI1LjcwNXMuMDc1LjM5NC4wOTUuNjE4bC4wMTUuMjE4di4xM2wtLjAwOC4xNDYtLjAwNy4yNjJ2LjM2MmMwIC4yMzQtLjAzMi41NC0uMDk1LjkyM3MtLjE2LjgxNi0uMjkyIDEuMzAxYy0uMTI5LjQ4NC0uMjk0IDEuMDA5LS40OTMgMS41Ny0uMTk5LjU2Mi0uNDMzIDEuMTM0LS43MDQgMS43MTUtLjM1OC43NjctLjgwNyAxLjUyMy0xLjM0NSAyLjI3NS0uNTM3Ljc1LTEuMTMxIDEuNDE2LTEuNzggMS45OTgtLjY0LjU4MS0xLjQwMyAxLjA1NC0yLjI5IDEuNDE3LS44ODYuMzYzLTEuODI5LjU0NC0yLjgyNy41NDQtLjUyMiAwLTEuMDAzLS4wMzctMS40MzgtLjExNS0uNDM3LS4wNzgtLjg5Ni0uMjI3LTEuMzgxLS40NWwtLjYyNS0uMjg0Yy0uMTc1LS4wODMtLjMyNS0uMTYzLS40NTEtLjIzOWwtMS4yMi0uNzQxLS4yOTEtLjE3NWMuMzEtLjQzNy42NTYtLjg0NCAxLjAzOS0xLjIyMS4zODItLjM3OS44MDctLjczNSAxLjI3MS0xLjA3Ni45Mi0uNjc4IDEuODU1LTEuMjM1IDIuODA1LTEuNjcxLjY3OC0uMzE4IDEuMzY0LS42MjEgMi4wNTctLjkuNjkzLS4yODEgMS4zMzItLjU1NCAxLjkxOC0uODE0LjU4OC0uMjYyIDEuMDk5LS41MjEgMS41MzQtLjc3OC40MzYtLjI1Ny43NDEtLjUyNS45MTYtLjgwNi0uNTUzLjM0OC0xLjI2NS42NzgtMi4xMzcuOTg3LS40MzcuMTQ1LS44Ni4yODQtMS4yNzIuNDE0LS40MTEuMTMxLS44Mi4yNTUtMS4yMjguMzctLjgyMy4yMzMtMS42NjEuNTE1LTIuNTE0Ljg0NC0uODcyLjMzLTEuNzMyLjc4Mi0yLjU4IDEuMzU5cy0xLjYwNyAxLjI4NC0yLjI3NiAyLjEyN3oiLz48L3N2Zz4='/>
+    <img hidden?="{{!has_fan}}" src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMC4wMDIiIGhlaWdodD0iMjAiIHZpZXdCb3g9Ii0yLjUgMzc5LjUgMjAuMDAyIDIwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IC0yLjUgMzc5LjUgMjAuMDAyIDIwIj48cGF0aCBmaWxsPSIjRjZGQkZBIiBkPSJNOS43MzggMzg5LjIyOWMtLjEwNC4wMzktLjE4NS4xMDQtLjI0My4xOTMtLjA1OC4wOTItLjA4Ny4xODMtLjA4Ny4yNzNzLjAzMS4xNy4wOTcuMjQyYy4wNjUuMDY5LjE2OC4xMDYuMzExLjEwNi41OTUuMDI0IDEuMTcuMTc4IDEuNzI3LjQ1NS41NTYuMjc5IDEuMDA4LjU3OSAxLjM1Ni45MDEuMjcyLjI0NS40OTguNTA4LjY4Ljc4Ni4xODEuMjc3LjMwNy41NzUuMzc5Ljg5Mi4wNjkuMzE3LjA3Ni42NTkuMDE5IDEuMDI4LS4wNTguMzY4LS4xOTcuNzYtLjQxNyAxLjE3My0uMTQyLjI3MS0uMzM2LjUyNy0uNTgxLjc2Ni0uMjQ3LjIzOS0uNTIxLjQ1Ny0uODI1LjY1LS4zMDQuMTk0LS42My4zNTktLjk3OS40OTQtLjM0OS4xMzctLjY5Ny4yMy0xLjA0Ny4yODItLjQxNC4wNjMtLjc5NS4wMi0xLjE0NS0uMTM2LS4zNDktLjE1NS0uNjMzLS4zODItLjg1My0uNjc5LS4yMjEtLjI5OC0uMzQ2LS42NDQtLjM3OC0xLjAzOC0uMDMzLS4zOTUuMDY4LS44MDUuMzAxLTEuMjMxLjI3MS0uNDkxLjM5Ni0uOTc5LjM3Ny0xLjQ2NC0uMDE5LS40ODUtLjA4MS0uODgzLS4xODQtMS4xOTMtLjA0LS4xMDQtLjEwNC0uMTg1LS4xOTQtLjI0Mi0uMDkyLS4wNTctLjE4Mi0uMDg3LS4yNzMtLjA4Ny0uMDkgMC0uMTcxLjAzNy0uMjQyLjEwNy0uMDcxLjA3MS0uMTA2LjE3MS0uMTA2LjMwMS0uMDE0LjI5Ny0uMDYyLjU5Mi0uMTQ2Ljg4Mi0uMDg0LjI5Mi0uMTkuNTczLS4zMTkuODQ1LS4xMjkuMjcxLS4yNzIuNTIyLS40MjcuNzU1LS4xNTUuMjMzLS4zMS40MzQtLjQ2NS42MDItLjI0NS4yNTktLjUwNy40ODItLjc4NS42Ny0uMjc4LjE4Ny0uNTc5LjMxNi0uOTAyLjM4OC0uMzIzLjA2OS0uNjY2LjA3Ny0xLjAyOC4wMTktLjM2Mi0uMDU4LS43NS0uMTk3LTEuMTYzLS40MTctLjI3Mi0uMTQzLS41MjctLjMzNi0uNzY2LS41ODEtLjIzOS0uMjQ2LS40NTYtLjUyMS0uNjUtLjgyNC0uMTk0LS4zMDQtLjM1OS0uNjMxLS40OTUtLjk3OS0uMTM1LS4zNS0uMjI5LS42OTgtLjI4MS0xLjA0Ny0uMDY0LS40MDEtLjAxOS0uNzc5LjEzNi0xLjEzNi4xNTUtLjM1NS4zODEtLjY0My42NzktLjg2My4yOTctLjIyLjY0My0uMzQ1IDEuMDM3LS4zNzguMzk1LS4wMzEuODA1LjA2OCAxLjIzMi4zMDIuNDkxLjI3MS45NzkuMzk3IDEuNDY0LjM3OS40ODUtLjAyMS44ODItLjA4MiAxLjE5Mi0uMTg2LjEwNC0uMDQuMTg1LS4xMDMuMjQzLS4xOTNzLjA4Ny0uMTgyLjA4Ny0uMjcyLS4wMzUtLjE3MS0uMTA2LS4yNDJjLS4wNzItLjA3LS4xNzItLjEwNy0uMzAxLS4xMDctLjU5NS0uMDI1LTEuMTcxLS4xNzctMS43MjctLjQ1NC0uNTU2LS4yNzktMS4wMDgtLjU4LTEuMzU3LS45MDItLjI1OS0uMjQ2LS40ODItLjUwOC0uNjY5LS43ODZzLS4zMTYtLjU3OC0uMzg3LS45MDEtLjA3OC0uNjY2LS4wMi0xLjAyN2MuMDU4LS4zNjIuMTk3LS43NS40MTctMS4xNjUuMTQzLS4yNzEuMzM2LS41MjguNTgzLS43NzUuMjQ2LS4yNDUuNTItLjQ2NS44MjQtLjY1OS4zMDQtLjE5My42MzEtLjM1NS45NzktLjQ4NS4zNDktLjEyOS42OTgtLjIyIDEuMDQ3LS4yNzEuNDAxLS4wNTEuNzgyLS4wMDYgMS4xNDQuMTM2LjM2Mi4xNDQuNjUuMzU5Ljg2My42NTEuMjE0LjI4OS4zMzYuNjM2LjM2OSAxLjAzNy4wMzIuNC0uMDY4LjgyLS4zIDEuMjYtLjI1OS40OTItLjM4Mi45NzktLjM2OSAxLjQ2NS4wMTQuNDg0LjA3MS44ODIuMTc1IDEuMTkyLjAzOC4xMDQuMTA0LjE4NS4xOTQuMjQyLjA5LjA1OS4xOC4wODguMjcxLjA4OHMuMTcyLS4wMzEuMjQyLS4wOTdjLjA3Mi0uMDY0LjEwOC0uMTY4LjEwOC0uMzExLjAyNS0uNTk1LjE3NC0xLjE2Ni40NDYtMS43MTcuMjcxLS41NDkuNTc1LTEuMDA2LjkxMS0xLjM2Ni4yNDYtLjI3Mi41MDctLjQ5OS43ODYtLjY4LjI3OC0uMTgxLjU3NS0uMzA3Ljg5MS0uMzc5LjMxNy0uMDY5LjY2LS4wNzYgMS4wMjktLjAxOS4zNjcuMDU4Ljc1OS4xOTcgMS4xNzQuNDE3LjI3MS4xNDIuNTI4LjMzNi43NzUuNTgxLjI0NS4yNDcuNDY1LjUyMS42NTkuODI1LjE5My4zMDQuMzU1LjYzLjQ4NS45NzkuMTI5LjM0OS4yMi42OTcuMjcxIDEuMDQ3LjA1MS40MTQuMDA1Ljc5OC0uMTM2IDEuMTUzLS4xNDQuMzU2LS4zNTkuNjQxLS42NTEuODU0LS4yODkuMjEzLS42MzcuMzM3LTEuMDM4LjM3LS4zOTkuMDMxLS44Mi0uMDY4LTEuMjU5LS4zMDMtLjQ5Mi0uMjU3LS45NzktLjM4LTEuNDY1LS4zNjctLjQ4Ni4wMDgtLjg4My4wNjgtMS4xOTQuMTcxem0tMS45OTcgMS4zYy4yMiAwIC40MDctLjA3Ny41NjItLjIzNC4xNTUtLjE1NS4yMzItLjM0Mi4yMzItLjU2MnMtLjA3Ny0uNDA4LS4yMzItLjU2MmMtLjE1Ni0uMTU2LS4zNDMtLjIzMy0uNTYyLS4yMzNzLS40MDguMDc3LS41NjMuMjMzYy0uMTU0LjE1NC0uMjMzLjM0My0uMjMzLjU2MnMuMDc5LjQwNi4yMzMuNTYyYy4xNTUuMTU3LjM0My4yMzQuNTYzLjIzNHoiLz48L3N2Zz4='/>
+    <p>Target: {{target_temperature}} {{scale}}</p>
+    <div id="temp-down" class='temp-arrow' on-tap="{{downTapped}}">⬇︎</div>
+  </template>
+  <script>
+  Polymer('nest-control', {
+    publish: {
+      temperature: {
+        value: '...',
+        reflect: true
+      },
+      target_temperature: {
+        value: ' ',
+        reflects: true
+      },
+      scale: {
+        value: ' ',
+        reflect: true
+      },
+      mode: {
+        value: ' ',
+        reflect: true
+      },
+      has_leaf: {
+        value: false,
+        reflect: true
+      },
+      has_fan: {
+        value: false,
+        reflect: true
+      },
+    },
+    upTapped: function(event, detail, sender) {
+      incrementTemperature();
+    },
+    downTapped: function(event, detail, sender) {
+      decrementTemperature();
+    },
+    ready: function() {
+      var self = this;
+      window.addEventListener('api-update', function() {
+        self.apiUpdate();
+      });
+    },
+    apiUpdate: function() {
+      this.scale = getScale();
+      this.temperature = getTemperature();
+      this.mode = getMode();
+      this.target_temperature = getTargetTemperature();
+      this.has_leaf = getHasLeaf();
+      this.has_fan = getHasFan();
+      this.style.background = this.mode == 'cool' ? '#4285f4' : '#da4336';
+    }
+  });
+  </script>
+</polymer-element>
