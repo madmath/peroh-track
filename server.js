@@ -30,8 +30,8 @@ var express = require('express'),
   Here we are pulling those in from ENV variables.
 */
 passport.use(new NestStrategy({
-    clientID: process.env.NEST_ID,
-    clientSecret: process.env.NEST_SECRET
+    clientID: "1da93c38-a9be-4c98-ab52-d340ff29af15",
+    clientSecret: "kD58s38rP55BtJoLkMbCcRqyB"
   }
 ));
 
