@@ -6,5 +6,9 @@
     "express-session": "latest",
     "passport": "latest",
     "passport-nest": "latest"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "bower install"
   }
 }
