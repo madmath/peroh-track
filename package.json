@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "body-parser": "latest",
+    "bower": "latest",
     "cookie-parser": "latest",
     "express": "latest",
     "express-session": "latest",
