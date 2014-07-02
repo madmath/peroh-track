@@ -1,5 +1,5 @@
 /**
- *  Copyright 2014 Nest Labs Inc. All Rights Reserved.
+ *  Based on Copyright 2014 Nest Labs Inc. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/* globals $, Firebase */
+/* globals Firebase */
 'use strict';
 
 
@@ -70,16 +70,13 @@ function firstChild(object) {
   }
 }
 
+/* Accessors */
 function getScale() {
   return thermostat.temperature_scale;
 }
 
 function getHasLeaf() {
   return thermostat.has_leaf;
-}
-
-function getHasFan() {
-  return thermostat.has_fan;
 }
 
 function getTemperature() {
@@ -93,6 +90,11 @@ function getMode() {
 function getTargetTemperature() {
   return thermostat['target_temperature_' + getScale().toLowerCase()];
 }
+
+function getThermostatName() {
+  return thermostat['name'];
+}
+
 /**
   Start listening for changes on this account,
   update appropriate views as data changes.

@@ -43,30 +43,22 @@
     width: 80%;
     margin: 50px auto;
   }
-  @media (min-width: 481px) {
-    paper-tabs {
-      width: 200px;
-    }
-    .container {
-      width: 400px;
-    }
-  }
   </style>
 </head>
 <body unresolved touch-action="auto">
   <core-header-panel>
     <core-toolbar  style="background: #0f9d58;">
-      <paper-icon-button icon="menu" role="button" tabindex="0"></paper-icon-button>
-      <span flex="">My Nest</span>
-      <paper-icon-button icon="refresh" role="button" tabindex="0"></paper-icon-button>
-      <paper-icon-button icon="more-vert" role="button" tabindex="0"></paper-icon-button>
+      <span id='thermostat_name' flex="">My Nest</span>
     </core-toolbar>
 
     <div class="container" layout vertical center>
-      <nest-control
-        on-temp-up="{{handleTempUp}}"
-        on-temp-down="{{handleTempDown}}"></nest-control>
+      <nest-control></nest-control>
     </div>
   </core-header-panel>
+  <script>
+  window.addEventListener('thermostat-name', function(event) {
+    document.getElementById('thermostat_name').innerText = event.detail.name;
+  });
+  </script>
 </body>
 </html>
