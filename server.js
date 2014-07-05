@@ -29,7 +29,7 @@ var express = require('express'),
 */
 passport.use(new NestStrategy({
     clientID: "1da93c38-a9be-4c98-ab52-d340ff29af15",
-    clientSecret: "<put your secret here>"
+    clientSecret: "kD58s38rP55BtJoLkMbCcRqyB"
   }
 ));
 
