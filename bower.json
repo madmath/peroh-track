@@ -1,11 +1,11 @@
 {
   "name": "peroh-track",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/madmath/peroh-track",
   "authors": [
     "Mathieu Perreault <mathieu.perreault@gmail.com>"
   ],
-  "description": "Application to track Nest",
+  "description": "Application to control your Nest thermostat",
   "license": "MIT",
   "private": true,
   "ignore": [
