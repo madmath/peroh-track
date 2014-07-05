@@ -1,6 +1,8 @@
 peroh-track
 ===========
 
+Currently running at [https://polynest.herokuapp.com](https://polynest.herokuapp.com).
+
 Control your Nest thermostat from the browser. Built using [Polymer](http://polymer-project.org).
 
 Stores the auth token in the cookies.
