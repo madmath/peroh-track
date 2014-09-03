@@ -44,69 +44,44 @@
       margin-top: 75px;
     }
     </style>
-    <div hidden?="{{is_off}}" class='temp-arrow' on-tap="{{upTapped}}">⬆</div>
+    <div hidden?="{{ mode == 'off' }}" class='temp-arrow' on-tap="{{ _upTapped }}">⬆</div>
     <br>
     <div class="current-temperature" >
-      <div hidden?="{{is_off}}"><h2>{{temperature}}<span hidden?={{!is_celcius}}>℃</span><span hidden?={{is_celcius}}>F</span></h2></div>
-      <div class="off" hidden?="{{!is_off}}"><h2>OFF</h2></div>
+      <div hidden?="{{ mode == 'off' }}">
+        <h2>{{ temperature }}<span hidden?="{{ scale != 'C' }}">℃</span><span hidden?="{{ scale != 'F' }}">F</span></h2>
+      </div>
+      <div class="off" hidden?="{{ mode != 'off' }}"><h2>OFF</h2></div>
     </div>
-    <img hidden?="{{!has_leaf}}" style="width: 10%" src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMC4wMDIiIGhlaWdodD0iMjAiIHZpZXdCb3g9Ii0yLjUgMzc5LjUgMjAuMDAyIDIwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IC0yLjUgMzc5LjUgMjAuMDAyIDIwIj48cGF0aCBmaWxsPSIjNzFCRjQ0IiBkPSJNLS40NDcgMzkyLjUxN2MuMDY3LS45NzkuMjA1LTEuOTAzLjQxNC0yLjc3Ni4yMDgtLjg3MS40ODctMS42Ni44MzYtMi4zNy4zNDktLjcwNi43NzUtMS4zMTUgMS4yNzktMS44MjkuNTAzLS41MTQgMS4wODUtLjkgMS43NDQtMS4xNjMuMy0uMTE3LjYzNC0uMjI5IDEuMDAzLS4zMzQuMzY4LS4xMDYuNzg1LS4xOTkgMS4yNS0uMjc3LjkwMS0uMTU0IDEuNzczLS4yODUgMi42MTYtLjM5My42MjEtLjA2NiAxLjI0OC0uMTQ4IDEuODgzLS4yNDcuNjM1LS4wOTYgMS4yMzItLjIxOCAxLjc5NS0uMzYzczEuMDY1LS4zMTggMS41MTItLjUyMi43OTMtLjQ1MSAxLjA0Ny0uNzQxYy4xMDYuMjgxLjE4Mi41MTYuMjI1LjcwNXMuMDc1LjM5NC4wOTUuNjE4bC4wMTUuMjE4di4xM2wtLjAwOC4xNDYtLjAwNy4yNjJ2LjM2MmMwIC4yMzQtLjAzMi41NC0uMDk1LjkyM3MtLjE2LjgxNi0uMjkyIDEuMzAxYy0uMTI5LjQ4NC0uMjk0IDEuMDA5LS40OTMgMS41Ny0uMTk5LjU2Mi0uNDMzIDEuMTM0LS43MDQgMS43MTUtLjM1OC43NjctLjgwNyAxLjUyMy0xLjM0NSAyLjI3NS0uNTM3Ljc1LTEuMTMxIDEuNDE2LTEuNzggMS45OTgtLjY0LjU4MS0xLjQwMyAxLjA1NC0yLjI5IDEuNDE3LS44ODYuMzYzLTEuODI5LjU0NC0yLjgyNy41NDQtLjUyMiAwLTEuMDAzLS4wMzctMS40MzgtLjExNS0uNDM3LS4wNzgtLjg5Ni0uMjI3LTEuMzgxLS40NWwtLjYyNS0uMjg0Yy0uMTc1LS4wODMtLjMyNS0uMTYzLS40NTEtLjIzOWwtMS4yMi0uNzQxLS4yOTEtLjE3NWMuMzEtLjQzNy42NTYtLjg0NCAxLjAzOS0xLjIyMS4zODItLjM3OS44MDctLjczNSAxLjI3MS0xLjA3Ni45Mi0uNjc4IDEuODU1LTEuMjM1IDIuODA1LTEuNjcxLjY3OC0uMzE4IDEuMzY0LS42MjEgMi4wNTctLjkuNjkzLS4yODEgMS4zMzItLjU1NCAxLjkxOC0uODE0LjU4OC0uMjYyIDEuMDk5LS41MjEgMS41MzQtLjc3OC40MzYtLjI1Ny43NDEtLjUyNS45MTYtLjgwNi0uNTUzLjM0OC0xLjI2NS42NzgtMi4xMzcuOTg3LS40MzcuMTQ1LS44Ni4yODQtMS4yNzIuNDE0LS40MTEuMTMxLS44Mi4yNTUtMS4yMjguMzctLjgyMy4yMzMtMS42NjEuNTE1LTIuNTE0Ljg0NC0uODcyLjMzLTEuNzMyLjc4Mi0yLjU4IDEuMzU5cy0xLjYwNyAxLjI4NC0yLjI3NiAyLjEyN3oiLz48L3N2Zz4='/>
-    <p hidden?="{{is_off}}">Target: {{target_temperature}}<span hidden?={{!is_celcius}}>℃</span><span hidden?={{is_celcius}}>F</span></p>
-    <div hidden?="{{is_off}}" id="temp-down" class='temp-arrow' on-tap="{{downTapped}}">⬇︎</div>
+    <img hidden?="{{ !has_leaf }}" style="width: 10%" src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMC4wMDIiIGhlaWdodD0iMjAiIHZpZXdCb3g9Ii0yLjUgMzc5LjUgMjAuMDAyIDIwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IC0yLjUgMzc5LjUgMjAuMDAyIDIwIj48cGF0aCBmaWxsPSIjNzFCRjQ0IiBkPSJNLS40NDcgMzkyLjUxN2MuMDY3LS45NzkuMjA1LTEuOTAzLjQxNC0yLjc3Ni4yMDgtLjg3MS40ODctMS42Ni44MzYtMi4zNy4zNDktLjcwNi43NzUtMS4zMTUgMS4yNzktMS44MjkuNTAzLS41MTQgMS4wODUtLjkgMS43NDQtMS4xNjMuMy0uMTE3LjYzNC0uMjI5IDEuMDAzLS4zMzQuMzY4LS4xMDYuNzg1LS4xOTkgMS4yNS0uMjc3LjkwMS0uMTU0IDEuNzczLS4yODUgMi42MTYtLjM5My42MjEtLjA2NiAxLjI0OC0uMTQ4IDEuODgzLS4yNDcuNjM1LS4wOTYgMS4yMzItLjIxOCAxLjc5NS0uMzYzczEuMDY1LS4zMTggMS41MTItLjUyMi43OTMtLjQ1MSAxLjA0Ny0uNzQxYy4xMDYuMjgxLjE4Mi41MTYuMjI1LjcwNXMuMDc1LjM5NC4wOTUuNjE4bC4wMTUuMjE4di4xM2wtLjAwOC4xNDYtLjAwNy4yNjJ2LjM2MmMwIC4yMzQtLjAzMi41NC0uMDk1LjkyM3MtLjE2LjgxNi0uMjkyIDEuMzAxYy0uMTI5LjQ4NC0uMjk0IDEuMDA5LS40OTMgMS41Ny0uMTk5LjU2Mi0uNDMzIDEuMTM0LS43MDQgMS43MTUtLjM1OC43NjctLjgwNyAxLjUyMy0xLjM0NSAyLjI3NS0uNTM3Ljc1LTEuMTMxIDEuNDE2LTEuNzggMS45OTgtLjY0LjU4MS0xLjQwMyAxLjA1NC0yLjI5IDEuNDE3LS44ODYuMzYzLTEuODI5LjU0NC0yLjgyNy41NDQtLjUyMiAwLTEuMDAzLS4wMzctMS40MzgtLjExNS0uNDM3LS4wNzgtLjg5Ni0uMjI3LTEuMzgxLS40NWwtLjYyNS0uMjg0Yy0uMTc1LS4wODMtLjMyNS0uMTYzLS40NTEtLjIzOWwtMS4yMi0uNzQxLS4yOTEtLjE3NWMuMzEtLjQzNy42NTYtLjg0NCAxLjAzOS0xLjIyMS4zODItLjM3OS44MDctLjczNSAxLjI3MS0xLjA3Ni45Mi0uNjc4IDEuODU1LTEuMjM1IDIuODA1LTEuNjcxLjY3OC0uMzE4IDEuMzY0LS42MjEgMi4wNTctLjkuNjkzLS4yODEgMS4zMzItLjU1NCAxLjkxOC0uODE0LjU4OC0uMjYyIDEuMDk5LS41MjEgMS41MzQtLjc3OC40MzYtLjI1Ny43NDEtLjUyNS45MTYtLjgwNi0uNTUzLjM0OC0xLjI2NS42NzgtMi4xMzcuOTg3LS40MzcuMTQ1LS44Ni4yODQtMS4yNzIuNDE0LS40MTEuMTMxLS44Mi4yNTUtMS4yMjguMzctLjgyMy4yMzMtMS42NjEuNTE1LTIuNTE0Ljg0NC0uODcyLjMzLTEuNzMyLjc4Mi0yLjU4IDEuMzU5cy0xLjYwNyAxLjI4NC0yLjI3NiAyLjEyN3oiLz48L3N2Zz4='/>
+    <p hidden?="{{ mode == 'off' }}">
+      Target: {{target_temperature}}<span hidden?="{{ scale != 'C' }}">℃</span><span hidden?="{{ scale != 'F' }}">F</span>
+    </p>
+    <div hidden?="{{ mode == 'off' }}" id="temp-down" class='temp-arrow' on-tap="{{ _downTapped }}">⬇︎</div>
   </template>
   <script>
   Polymer('nest-control', {
-    publish: {
-      temperature: {
-        value: '...',
-        reflect: true
-      },
-      target_temperature: {
-        value: ' ',
-        reflects: true
-      },
-      scale: {
-        value: ' ',
-        reflect: true
-      },
-      is_celcius: {
-        value: false,
-        reflect: true
-      },
-      mode: {
-        value: ' ',
-        reflect: true
-      },
-      has_leaf: {
-        value: false,
-        reflect: true
-      },
-      is_off: {
-        value: false,
-        reflect: true
-      }
-    },
-    upTapped: function(event, detail, sender) {
+    temperature: '...',
+    target_temperature: ' ',
+    scale: ' ',
+    mode: ' ',
+    has_leaf: false,
+
+    _upTapped: function(event, detail, sender) {
       incrementTemperature();
     },
-    downTapped: function(event, detail, sender) {
+
+    _downTapped: function(event, detail, sender) {
       decrementTemperature();
     },
+
     ready: function() {
       var self = this;
       window.addEventListener('api-update', function() {
         self.apiUpdate();
       });
     },
-    apiUpdate: function() {
-      window.dispatchEvent(new CustomEvent('thermostat-name', {'detail' : {'name': getThermostatName() } }));
-      this.scale = getScale();
-      this.is_celcius = this.scale == 'C';
-      this.temperature = getTemperature();
-      this.mode = getMode();
-      this.is_off = this.mode == 'off';
-      this.target_temperature = getTargetTemperature();
-      this.has_leaf = getHasLeaf();
+
+    _updateBackgroundColor: function() {
       if (this.mode == 'cool') {
         this.style.background = '#4285f4';
       } else if (this.mode == 'heat') {
@@ -114,6 +89,16 @@
       } else {
         this.style.background = 'white';
       }
+    },
+
+    apiUpdate: function() {
+      window.dispatchEvent(new CustomEvent('thermostat-name', {'detail' : {'name': getThermostatName() } }));
+      this.scale = getScale();
+      this.temperature = getTemperature();
+      this.mode = getMode();
+      this.target_temperature = getTargetTemperature();
+      this.has_leaf = getHasLeaf();
+      this._updateBackgroundColor();
     }
   });
   </script>
