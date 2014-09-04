@@ -4,6 +4,7 @@
 <link rel="import" href="/bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="/bower_components/core-icons/core-icons.html">
 <link rel="import" href="/bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="/bower_components/core-localstorage/core-localstorage.html">
 <link rel="import" href="/bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="/bower_components/font-roboto/roboto.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
@@ -68,6 +69,7 @@
           <!-- Actual demo here. -->
           <input placeholder="Type something..."  layout vertical value="{{ expression }}"></input>
           <frequency-counter expression="{{ expression }}"></frequency-counter>
+          <core-localstorage name="demo-page-storage" value="{{ expression }}"></core-localstorage>
         </div>
       </div>
 
